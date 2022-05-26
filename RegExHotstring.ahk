@@ -3,7 +3,7 @@
 Esc:: ExitApp()
 
 SacHook := InputHook("V")
-SacHook.KeyOpt("{Tab}{Space}{Enter}", "+SN")
+SacHook.KeyOpt("{Tab}{Space}{Enter}", "+N")
 SacHook.OnKeyDown := SacChar
 SacHook.Start()
 Hs := RegExHs()
@@ -30,7 +30,6 @@ SacChar(ih, vk, sc) {
                 return
             }
         }
-        Send("{" GetKeyName(Format("vk{:x}sc{:x}", VK, SC)) "}")
         ih.Start()
     }
 }
@@ -59,7 +58,34 @@ Class RegExHs {
 
 RegExHotstring("(\w)abc", call)
 RegExHotstring("(\w)dbc", "dbc$1")
+::asdf::qwer
+RegExHotstring("!@(\d+)s", rand)
 
 call(match) {
     Send("call" match[1])
+}
+
+arr := Array()
+i := 0x30
+While i < 0x40 {
+    arr.Push(chr(i))
+    i++
+}
+i := 0x41
+While i <= 0x5a {
+    arr.Push(Chr(i))
+    i++
+}
+i := 0x61
+While i <= 0x7a {
+    arr.Push(Chr(i))
+    i++
+}
+rand(match) {
+    str := ""
+    loop match[1] {
+        r := Random(1, arr.Length)
+        str .= arr[r]
+    }
+    Send(str)
 }
