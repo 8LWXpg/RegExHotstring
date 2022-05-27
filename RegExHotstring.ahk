@@ -65,27 +65,11 @@ call(match) {
     Send("call" match[1])
 }
 
-arr := Array()
-i := 0x30
-While i < 0x40 {
-    arr.Push(chr(i))
-    i++
-}
-i := 0x41
-While i <= 0x5a {
-    arr.Push(Chr(i))
-    i++
-}
-i := 0x61
-While i <= 0x7a {
-    arr.Push(Chr(i))
-    i++
-}
+char := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 rand(match) {
-    str := ""
     loop match[1] {
-        r := Random(1, arr.Length)
-        str .= arr[r]
+        r := Random(1, StrLen(char))
+        str .= SubStr(char, r, 1)
     }
     Send(str)
 }
