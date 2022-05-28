@@ -3,8 +3,8 @@
 
 ; the upmost function will be triggered if it has the same expression
 RegExHotstring("(\w)abc(\w)", "$2abc$1")
-RegExHotstring("(\w)abc", call)
-RegExHotstring("(\w)dbc", "dbc$1")
+RegExHotstring("(\w)abc", "dbc$1")
+RegExHotstring("(\w)dbc", call)
 RegExHotstring("!@(\d+)s", rand)
 
 call(match) {
