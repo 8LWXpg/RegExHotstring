@@ -1,6 +1,6 @@
 # RegExHotstrings
 
-apply RegEx in hotstring triggering
+provide RegEx in hotstring triggering
 
 use space to trigger RegExHotstring
 
