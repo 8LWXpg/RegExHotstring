@@ -11,5 +11,5 @@ use space to trigger RegExHotstring
 - String:
     - RegEx string
 - CallBack:
-    - function to call when RegEx matches
+    - calls function with RegEx match info
     - RegExReplace string

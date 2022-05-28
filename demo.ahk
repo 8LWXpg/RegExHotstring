@@ -7,6 +7,7 @@ RegExHotstring("(\w)abc", "dbc$1")
 RegExHotstring("(\w)dbc", call)
 RegExHotstring("!@(\d+)s", rand)
 
+; calls with RegExMatchInfo
 call(match) {
     MsgBox("matched: " match[1])
 }
