@@ -1,8 +1,8 @@
 # RegExHotstrings
 
-provide RegEx in hotstring triggering
+Provide RegEx in hotstring triggering via ImputHook.
 
-use space to trigger RegExHotstring
+Use space to trigger RegExHotstring.
 
 ## code usage
 
