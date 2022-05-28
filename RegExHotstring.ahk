@@ -3,11 +3,11 @@
 SacHook := InputHook("VI")
 ; match when pressed
 SacHook.KeyOpt("{Space}", "+N")
-SacHook.OnKeyDown := SacKey
+SacHook.OnKeyDown := KeyDown
 SacHook.Start()
 Hs := RegExHs()
 
-SacKey(ih, vk, sc) {
+KeyDown(ih, vk, sc) {
     ; return when triggered by Hotstrings
     if HotstringIsQueued() {
         ih.Stop()
