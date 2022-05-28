@@ -16,7 +16,7 @@ SacKey(ih, vk, sc) {
         ih.Start()
         return
     }
-    
+
     ; loop through ench strings and find the first match
     input := SubStr(ih.Input, 1, StrLen(ih.Input) - 1)
     ih.Stop()
