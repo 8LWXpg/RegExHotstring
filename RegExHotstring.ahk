@@ -9,16 +9,16 @@ Hs := RegExHs()
 
 SacKey(ih, vk, sc) {
     ; return when triggered by Hotstrings
-    if HotstringIsQueued(){
+    if HotstringIsQueued() {
         ih.Stop()
-        Critical false  ; Enable immediate thread interruption.
-        Sleep -1        ; Process any pending messages.
+        Critical false	; Enable immediate thread interruption.
+        Sleep -1	; Process any pending messages.
         ih.Start()
         return
     }
     
     ; loop through ench strings and find the first match
-    input := SubStr(ih.Input,1,StrLen(ih.Input) - 1)
+    input := SubStr(ih.Input, 1, StrLen(ih.Input) - 1)
     ih.Stop()
     loop Hs.Len() {
         str := Hs.str_arr[A_Index]
@@ -43,13 +43,13 @@ SacKey(ih, vk, sc) {
 ; detect if hotstring is triggered
 HotstringIsQueued() {
     static AHK_HOTSTRING := 1025
-    msg := Buffer(4*A_PtrSize+16)
+    msg := Buffer(4 * A_PtrSize + 16)
     return DllCall("PeekMessage", "ptr", msg, "ptr", A_ScriptHwnd
         , "uint", AHK_HOTSTRING, "uint", AHK_HOTSTRING, "uint", 0)
 }
 
-RegExHotstring(str, callback) {
-    Hs.Append(str, callback)
+RegExHotstring(Str, CallBack) {
+    Hs.Append(Str, CallBack)
 }
 
 Class RegExHs {
@@ -58,9 +58,9 @@ Class RegExHs {
     call_arr := Array()
 
     ; append new RegExHotstring
-    Append(str, callback) {
-        this.str_arr.Push(str)
-        this.call_arr.Push(callback)
+    Append(Str, CallBack) {
+        this.str_arr.Push(Str)
+        this.call_arr.Push(CallBack)
     }
 
     Len() {
