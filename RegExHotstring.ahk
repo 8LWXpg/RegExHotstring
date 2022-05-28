@@ -1,45 +1,59 @@
 #SingleInstance Force
 
-Esc:: ExitApp()
-
-SacHook := InputHook("V")
-SacHook.KeyOpt("{Tab}{Space}{Enter}", "+N")
-SacHook.OnKeyDown := SacChar
+SacHook := InputHook("VI")
+; match when pressed
+SacHook.KeyOpt("{Space}", "+N")
+SacHook.OnKeyDown := SacKey
 SacHook.Start()
 Hs := RegExHs()
 
-SacChar(ih, vk, sc) {
-    ; match when pressed
-    if (vk = 0x09 || vk = 0x0d || vk = 0x20) {
-        ; loop through
-        input := ih.Input
+SacKey(ih, vk, sc) {
+    ; return when triggered by Hotstrings
+    if HotstringIsQueued(){
         ih.Stop()
-        loop Hs.Len() {
-            str := Hs.str_arr[A_Index]
-            call := Hs.call_arr[A_Index]
-            if (RegExMatch(input, str, &match)) {
-                ; delete matched string
-                Send("{BS " match.Len[0] + 1 "}")
-                if (call is String) {
-                    Send(RegExReplace(input, str, call))
-                } else if (call is Func) {
-                    call(match)
-                } else
-                    throw 'callback type error:`ninput should be "Func" or "String"'
-                ih.Start()
-                return
-            }
-        }
+        Critical false  ; Enable immediate thread interruption.
+        Sleep -1        ; Process any pending messages.
         ih.Start()
+        return
     }
+    
+    ; loop through ench strings and find the first match
+    input := SubStr(ih.Input,1,StrLen(ih.Input) - 1)
+    ih.Stop()
+    loop Hs.Len() {
+        str := Hs.str_arr[A_Index]
+        call := Hs.call_arr[A_Index]
+        if (RegExMatch(input, str, &match)) {
+            ; delete matched string
+            Send("{BS " (match.Len[0] + 1) "}")
+            if (call is String) {
+                Send(RegExReplace(input, str, call))
+            } else if (call is Func) {
+                call(match)
+            } else
+                throw 'callback type error `ncallback should be "Func" or "String"'
+            ih.Start()
+            return
+        }
+    }
+    ih.Start()
 }
 
-RegExHotstring(str, Callback) {
-    Hs.Append(str, Callback)
+; thanks lexikos - https://www.autohotkey.com/boards/viewtopic.php?f=82&t=104538#p464744
+; detect if hotstring is triggered
+HotstringIsQueued() {
+    static AHK_HOTSTRING := 1025
+    msg := Buffer(4*A_PtrSize+16)
+    return DllCall("PeekMessage", "ptr", msg, "ptr", A_ScriptHwnd
+        , "uint", AHK_HOTSTRING, "uint", AHK_HOTSTRING, "uint", 0)
+}
+
+RegExHotstring(str, callback) {
+    Hs.Append(str, callback)
 }
 
 Class RegExHs {
-
+    ; stores hotstrings and callbacks
     str_arr := Array()
     call_arr := Array()
 
@@ -52,24 +66,4 @@ Class RegExHs {
     Len() {
         return this.str_arr.Length
     }
-}
-
-; ###################### test #########################
-
-RegExHotstring("(\w)abc", call)
-RegExHotstring("(\w)dbc", "dbc$1")
-::asdf::qwer
-RegExHotstring("!@(\d+)s", rand)
-
-call(match) {
-    Send("call" match[1])
-}
-
-char := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-rand(match) {
-    loop match[1] {
-        r := Random(1, StrLen(char))
-        str .= SubStr(char, r, 1)
-    }
-    Send(str)
 }
