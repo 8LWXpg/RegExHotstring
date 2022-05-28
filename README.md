@@ -1,6 +1,6 @@
 # RegExHotstrings
 
-Provide RegEx in hotstring triggering via ImputHook.
+Provides RegEx in hotstring triggering via ImputHook.
 
 Use space to trigger RegExHotstring.
 
