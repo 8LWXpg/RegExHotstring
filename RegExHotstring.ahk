@@ -31,7 +31,7 @@ KeyDown(ih, vk, sc) {
             } else if (call is Func) {
                 call(match)
             } else
-                throw 'callback type error `ncallback should be "Func" or "String"'
+                throw Error('callback type error `ncallback should be "Func" or "String"')
             ih.Start()
             return
         }
