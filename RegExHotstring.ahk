@@ -48,8 +48,8 @@ HotstringIsQueued() {
         , "uint", AHK_HOTSTRING, "uint", AHK_HOTSTRING, "uint", 0)
 }
 
-RegExHotstring(Str, CallBack) {
-    Hs.Append(Str, CallBack)
+RegExHotstring(Str, Callback) {
+    Hs.Append(Str, Callback)
 }
 
 Class RegExHs {
