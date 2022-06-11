@@ -47,7 +47,7 @@ Class RegExHs {
                 ; delete matched string
                 Send("{BS " (match.Len[0]) "}")
                 if (call is String) {
-                    Send(RegExReplace(input, str, call, , , start))
+                    Send(RegExReplace(SubStr(input, start), str, call))
                 } else if (call is Func) {
                     call(match)
                 } else
