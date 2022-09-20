@@ -1,4 +1,4 @@
-#Requires AutoHotkey v2
+#Requires AutoHotkey v2.0-beta
 #Include RegExHotstring.ahk
 #SingleInstance Force
 
@@ -10,14 +10,14 @@ RegExHotstring("!@(\d+)s", rand)
 
 ; calls with RegExMatchInfo
 call(match) {
-    MsgBox("matched: " match[1])
+	MsgBox("matched: " match[1])
 }
 
 char := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 rand(match) {
-    loop match[1] {
-        r := Random(1, StrLen(char))
-        str .= SubStr(char, r, 1)
-    }
-    Send(str)
+	loop match[1] {
+		r := Random(1, StrLen(char))
+		str .= SubStr(char, r, 1)
+	}
+	Send(str)
 }
