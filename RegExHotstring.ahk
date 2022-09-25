@@ -44,9 +44,9 @@ Class RegExHs {
 			call := this.Hs.call_arr[A_Index]
 			start := RegExMatch(input, str, &match)
 			if (start) {
+				Send("{BS " (match.Len[0]) "}")
 				if (call is String) {
 					; delete matched string
-					Send("{BS " (match.Len[0]) "}")
 					Send(RegExReplace(SubStr(input, start), str, call))
 				} else if (call is Func) {
 					call(match)
