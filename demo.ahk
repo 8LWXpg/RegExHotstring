@@ -1,4 +1,4 @@
-#Requires AutoHotkey v2.0-beta
+#Requires AutoHotkey v2.0
 #Include RegExHotstring.ahk
 #SingleInstance Force
 
