@@ -8,14 +8,14 @@
 RegExHotstring("(\w)a(\w)", "$2a$1")
 RegExHotstring("(\w)a", "b$1")
 
-; use anonomous function
+; use anonymous function
 RegExHotstring("(\w)b", (match) => MsgBox("matched: " match[1]))
 
 ; call with function name
 RegExHotstring("(\w)c", call)
 RegExHotstring("!@(\d+)s", rand)
 
-; recieves RegExMatchInfo
+; receives RegExMatchInfo
 call(match) {
 	MsgBox("matched: " match[1])
 }
