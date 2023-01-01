@@ -2,16 +2,17 @@
 
 RegHook := RegExHs("VI")
 ; match when pressed
-RegHook.KeyOpt("{Space}", "+N")
 RegHook.NotifyNonText := true
+RegHook.KeyOpt("{Space}", "+N")
+; RegHook.KeyOpt("{BS}", "-N")
 RegHook.Start()
 
-RegExHotstring(Str, Callback) {
-	RegHook.Append(Str, Callback)
+RegExHotstring(Str, CallBack) {
+	RegHook.Append(Str, CallBack)
 }
 
 Class RegExHs extends InputHook {
-	; stores hotstrings and callbacks
+	; stores hotstrings and CallBacks
 	str_arr := Array()
 	call_arr := Array()
 
@@ -27,6 +28,9 @@ Class RegExHs extends InputHook {
 
 	OnKeyDown := this.KeyDown
 	KeyDown(vk, sc) {
+		if (vk = 8)
+			return
+
 		if (vk != 32) {
 			this.Stop()
 			this.Start()
@@ -54,7 +58,7 @@ Class RegExHs extends InputHook {
 				} else if (call is Func) {
 					call(match)
 				} else
-					throw Error('callback type error `nCallBack should be "Func" or "String"')
+					throw Error('CallBack type error `nCallBack should be "Func" or "String"')
 				this.Start()
 				return
 			}
