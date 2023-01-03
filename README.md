@@ -1,15 +1,17 @@
 # RegExHotstrings
 
-Provides RegEx in hotstring triggering via ImputHook.
+Provides RegEx in hotstring triggering via InputHook.
 
-Use space to trigger RegExHotstring.
+Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 
-## code usage
+## usage
 
 `RegExHotstring(String, CallBack)`
 
 - String:
-    - RegEx string
+  - RegEx string
 - CallBack:
-    - calls function with RegEx match info
-    - RegExReplace string
+  - calls function with RegEx match info
+  - RegExReplace string
+
+*currently incompatible with `IfWin`*

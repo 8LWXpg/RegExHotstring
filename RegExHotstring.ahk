@@ -1,9 +1,8 @@
 #Requires AutoHotkey v2.0
 
 RegHook := RegExHs("VI")
-; match when pressed
 RegHook.NotifyNonText := true
-RegHook.KeyOpt("{Space}", "+N")
+RegHook.KeyOpt("{Space}{Tab}{Enter}", "+SN")
 ; RegHook.KeyOpt("{BS}", "-N")
 RegHook.Start()
 
@@ -31,7 +30,7 @@ Class RegExHs extends InputHook {
 		if (vk = 8)
 			return
 
-		if (vk != 32) {
+		if (vk != 32 && vk != 9 && vk != 13) {
 			this.Stop()
 			this.Start()
 			return
@@ -40,6 +39,7 @@ Class RegExHs extends InputHook {
 		; find the last pattern without \s
 		if (!RegExMatch(this.Input, "(\S+)(?![\s\S]*(\S+))", &match)) {
 			this.Stop()
+			Send("{vk" Format("{:02x}", vk) "}")
 			this.Start()
 			return
 		}
@@ -51,7 +51,7 @@ Class RegExHs extends InputHook {
 			call := this.call_arr[A_Index]
 			start := RegExMatch(input, str, &match)
 			if (start) {
-				Send("{BS " (match.Len[0] + 1) "}")
+				Send("{BS " match.Len[0] "}")
 				if (call is String) {
 					; delete matched string
 					Send(RegExReplace(SubStr(input, start), str, call))
@@ -63,6 +63,7 @@ Class RegExHs extends InputHook {
 				return
 			}
 		}
+		Send("{vk" Format("{:02x}", vk) "}")
 		this.Start()
 	}
 }

@@ -6,13 +6,13 @@
 
 ; replace with regex string
 RegExHotstring("(\w)a(\w)", "$2a$1")
-RegExHotstring("(\w)a", "b$1")
+RegExHotstring("(\w+)a", "b$1")
 
 ; use anonymous function
-RegExHotstring("(\w)b", (match) => MsgBox("matched: " match[1]))
+RegExHotstring("(\w+)b", (match) => MsgBox("matched: " match[1]))
 
 ; call with function name
-RegExHotstring("(\w)c", call)
+RegExHotstring("(\w*)c", call)
 RegExHotstring("!@(\d+)s", rand)
 
 ; receives RegExMatchInfo
