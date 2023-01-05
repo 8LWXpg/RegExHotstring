@@ -51,9 +51,9 @@ Class RegExHs extends InputHook {
 			call := this.call_arr[A_Index]
 			start := RegExMatch(input, str, &match)
 			if (start) {
+				; delete matched string
 				Send("{BS " match.Len[0] "}")
 				if (call is String) {
-					; delete matched string
 					Send(RegExReplace(SubStr(input, start), str, call))
 				} else if (call is Func) {
 					call(match)
