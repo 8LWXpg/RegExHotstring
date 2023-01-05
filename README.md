@@ -1,6 +1,6 @@
 # RegExHotstrings
 
-Provides RegEx in hotstring triggering via InputHook.
+Provides RegEx in hotstring triggering like normal hotstring.
 
 Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 
@@ -14,4 +14,4 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
   - calls function with RegEx match info
   - RegExReplace string
 
-*currently incompatible with `IfWin`*
+*currently incompatible with `#IfWin`*
