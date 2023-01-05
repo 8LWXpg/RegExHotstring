@@ -66,8 +66,6 @@ Class RegExHs extends InputHook {
 
 	OnKeyUp := this.KeyUp
 	KeyUp(vk, sc) {
-		if (vk = 8)
-			return
 		if (vk = 32 || vk = 9 || vk = 13)
 			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 	}
