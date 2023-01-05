@@ -6,23 +6,22 @@ RegHook.KeyOpt("{Space}{Tab}{Enter}", "+SN")
 ; RegHook.KeyOpt("{BS}", "-N")
 RegHook.Start()
 
+/**
+ * Create a RegEx Hotstring or replace already existing one
+ * @param {String} Str RegEx string
+ * @param {Func or String} CallBack calls function with RegEx match info or replace string
+ */
 RegExHotstring(Str, CallBack) {
 	RegHook.Append(Str, CallBack)
 }
 
 Class RegExHs extends InputHook {
 	; stores hotstrings and CallBacks
-	str_arr := Array()
-	call_arr := Array()
+	Hs := Map()
 
 	; append new RegExHotstring
 	Append(Str, CallBack) {
-		this.str_arr.Push(Str "$")
-		this.call_arr.Push(CallBack)
-	}
-
-	Len() {
-		return this.str_arr.Length
+		this.Hs[Str "$"] := CallBack
 	}
 
 	OnKeyDown := this.KeyDown
@@ -39,16 +38,14 @@ Class RegExHs extends InputHook {
 		; find the last pattern without \s
 		if (!RegExMatch(this.Input, "(\S+)(?![\s\S]*(\S+))", &match)) {
 			this.Stop()
-			Send("{vk" Format("{:02x}", vk) "}")
+			Send("{Blind}{vk" Format("{:02x}", vk) " down}")
 			this.Start()
 			return
 		}
 		input := match[1]
 		this.Stop()
 		; loop through each strings and find the first match
-		loop this.Len() {
-			str := this.str_arr[A_Index]
-			call := this.call_arr[A_Index]
+		for str, call in this.Hs {
 			start := RegExMatch(input, str, &match)
 			if (start) {
 				; delete matched string
@@ -63,7 +60,15 @@ Class RegExHs extends InputHook {
 				return
 			}
 		}
-		Send("{vk" Format("{:02x}", vk) "}")
+		Send("{Blind}{vk" Format("{:02x}", vk) " down}")
 		this.Start()
+	}
+
+	OnKeyUp := this.KeyUp
+	KeyUp(vk, sc) {
+		if (vk = 8)
+			return
+		if (vk = 32 || vk = 9 || vk = 13)
+			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 	}
 }
