@@ -3,7 +3,6 @@
 RegHook := RegExHs("VI")
 RegHook.NotifyNonText := true
 RegHook.KeyOpt("{Space}{Tab}{Enter}", "+SN")
-; RegHook.KeyOpt("{BS}", "-N")
 RegHook.Start()
 
 /**
@@ -21,7 +20,7 @@ Class RegExHs extends InputHook {
 
 	; append new RegExHotstring
 	Append(Str, CallBack) {
-		this.Hs[Str "$"] := CallBack
+		this.Hs["^" Str "$"] := CallBack
 	}
 
 	OnKeyDown := this.KeyDown

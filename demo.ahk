@@ -5,15 +5,15 @@
 ; the upmost function will be triggered if it has the same expression
 
 ; replace with regex string
-RegExHotstring("(\w)a(\w)", "$2a$1")
 RegExHotstring("(\w+)a", "b$1")
+RegExHotstring("(\w)a(\w)", "$2a$1")
 
 ; use anonymous function
 RegExHotstring("(\w+)b", (match) => MsgBox("matched: " match[1]))
 
 ; call with function name
 RegExHotstring("(\w*)c", call)
-RegExHotstring("!@(\d+)s", rand)
+RegExHotstring("r(\d+)s", rand)
 
 ; receives RegExMatchInfo
 call(match) {
