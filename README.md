@@ -9,7 +9,7 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 `RegExHotstring(String, CallBack)`
 
 - String:
-  - RegEx string
+  - [RegEx string](https://www.autohotkey.com/docs/v2/misc/RegEx-QuickRef.htm)
 - CallBack:
   - calls function with RegEx match info
   - RegExReplace string
