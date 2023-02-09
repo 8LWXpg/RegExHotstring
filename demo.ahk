@@ -5,8 +5,9 @@
 ; the upmost function will be triggered if it has the same expression
 
 ; replace with regex string
-RegExHotstring("(\w+)a", "b$1")
+RegExHotstring("(\w+)a", "b$1", "C")
 RegExHotstring("(\w)a(\w)", "$2a$1")
+RegExHotstring("(\d+)(\w+)", "$2$1", "O?B0")
 
 ; use anonymous function
 RegExHotstring("(\w+)b", (match) => MsgBox("matched: " match[1]))
