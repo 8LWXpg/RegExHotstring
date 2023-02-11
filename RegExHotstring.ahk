@@ -10,20 +10,20 @@ RegHook.Start()
  * @param {String} Str RegEx string
  * @param {Func or String} CallBack calls function with RegEx match info or replace string
  * @param {String} Options
- * 
+ *
  * \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
  * use *0 to turn this option back off.
- * 
+ *
  * ? (question mark): The hotstring will be triggered even when it is inside another word;
  * that is, when the character typed immediately before it is alphanumeric.
  * Use ?0 to turn this option back off.
- * 
+ *
  * B0 (B followed by a zero): Automatic backspacing is not done to erase the abbreviation you type.
  * Use a plain B to turn backspacing back on after it was previously turned off.
- * 
+ *
  * C: Case sensitive: When you type an abbreviation, it must exactly match the case defined in the script.
  * Use C0 to turn case sensitivity back off.
- * 
+ *
  * O: Omit the ending character of auto-replace hotstrings when the replacement is produced.
  * Use O0 (the letter O followed by a zero) to turn this option back off.
  */
@@ -33,11 +33,12 @@ RegExHotstring(Str, CallBack, Options := "") {
 
 class RegExHs extends InputHook {
 	; stores with RegEx string as key and obj as value
-	; no "*" option
+	; "*0" option
 	a0 := Map()
-	; with "*" option
+	; "*" option
 	a := Map()
 
+	; process RegEx string and options then store in obj
 	class obj {
 		__New(string, call, options) {
 			this.call := call
@@ -68,6 +69,7 @@ class RegExHs extends InputHook {
 		if (info.opt["*"]) {
 			try
 				this.a0.Delete(Str)
+			; end key is always omitted
 			info.opt["O"] := true
 			this.a[Str] := info
 		} else {
@@ -91,14 +93,16 @@ class RegExHs extends InputHook {
 		this.Start()
 	}
 
-	OnKeyUp := this.keyUp
+	OnKeyUp:= this.keyUp
 	keyUp(vk, sc) {
-		if (vk = 8 || vk = 32 || vk = 9 || vk = 13)
-			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
+		if (vk = 8) {
+			Send("{Blind}{vk08 up}")
+			return
+		}
 	}
 
-	OnChar := this.Char
-	Char(c) {
+	OnChar := this.char
+	char(c) {
 		; debug use
 		; ToolTip(this.Input)
 
@@ -108,6 +112,7 @@ class RegExHs extends InputHook {
 		} else {
 			this.match(this.a, vk, 1)
 		}
+		Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 	}
 
 	match(map, vk, bs) {
@@ -129,6 +134,7 @@ class RegExHs extends InputHook {
 			call := obj.call
 			opt := obj.opt
 			start := RegExMatch(input, str, &match)
+			; if match, replace or call function
 			if (start) {
 				if (opt["B"])
 					Send("{BS " match.Len[0] - bs "}")
