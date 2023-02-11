@@ -2,15 +2,18 @@
 #Include RegExHotstring.ahk
 #SingleInstance Force
 
-; the upmost function will be triggered if it has the same expression
+; the upmost function will be triggered first
 
 ; replace with regex string
 RegExHotstring("(\w+)a", "b$1", "C")
-RegExHotstring("(\w)a(\w)", "$2a$1")
+RegExHotstring("(\w)a(\w)", "$2a$1", "*")
 RegExHotstring("(\d+)(\w+)", "$2$1", "O?B0")
 
 ; use anonymous function
 RegExHotstring("(\w+)b", (match) => MsgBox("matched: " match[1]))
+
+; modify callback and options
+^!a:: RegExHotstring("(\w+)a", (match) => MsgBox("matched: " match[1]), "*")
 
 ; call with function name
 RegExHotstring("(\w*)c", call)

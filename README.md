@@ -14,6 +14,9 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
   - calls function with RegEx match info
   - RegExReplace string
 - Options:
+  - \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
+  use *0 to turn this option back off.
+
   - ? (question mark): The hotstring will be triggered even when it is inside another word;
   that is, when the character typed immediately before it is alphanumeric.
   Use ?0 to turn this option back off.
