@@ -3,6 +3,7 @@
 RegHook := RegExHs("VI")
 RegHook.VisibleText := false
 RegHook.NotifyNonText := true
+RegHook.KeyOpt("{Space}{Tab}{Enter}", "+N")
 RegHook.Start()
 
 /**
@@ -86,17 +87,17 @@ class RegExHs extends InputHook {
 			Send("{Blind}{vk08 down}")
 			return
 		}
-		if (vk = 160 || vk = 161)
+		if (vk = 32 || vk = 9 || vk = 13 || vk = 160 || vk = 161)
 			return
 
 		this.Stop()
 		this.Start()
 	}
 
-	OnKeyUp:= this.keyUp
+	OnKeyUp := this.keyUp
 	keyUp(vk, sc) {
-		if (vk = 8) {
-			Send("{Blind}{vk08 up}")
+		if (vk = 8 || vk = 32 || vk = 9 || vk = 13) {
+			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 			return
 		}
 	}
@@ -111,8 +112,8 @@ class RegExHs extends InputHook {
 			this.match(this.a0, vk, 0)
 		} else {
 			this.match(this.a, vk, 1)
+			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 		}
-		Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 	}
 
 	match(map, vk, bs) {
