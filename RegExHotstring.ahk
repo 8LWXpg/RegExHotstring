@@ -83,15 +83,16 @@ class RegExHs extends InputHook {
 	; clear input when press non-text key
 	OnKeyDown := this.keyDown
 	keyDown(vk, sc) {
-		if (vk = 8) {
-			Send("{Blind}{vk08 down}")
-			return
+		switch vk {
+			case 8:
+				Send("{Blind}{vk08 down}")
+				return
+			case 32, 9, 13, 160, 161:
+				return
+			default:
+				this.Stop()
+				this.Start()
 		}
-		if (vk = 32 || vk = 9 || vk = 13 || vk = 160 || vk = 161)
-			return
-
-		this.Stop()
-		this.Start()
 	}
 
 	OnKeyUp := this.keyUp
