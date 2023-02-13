@@ -1,9 +1,8 @@
 #Requires AutoHotkey v2.0
 
 RegHook := RegExHs("VI")
-RegHook.VisibleText := false
 RegHook.NotifyNonText := true
-RegHook.KeyOpt("{Space}{Tab}{Enter}", "+N")
+RegHook.KeyOpt("{Space}{Tab}{Enter}", "+SN")
 RegHook.Start()
 
 /**
@@ -11,20 +10,20 @@ RegHook.Start()
  * @param {String} Str RegEx string
  * @param {Func or String} CallBack calls function with RegEx match info or replace string
  * @param {String} Options
- *
+ * 
  * \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
  * use *0 to turn this option back off.
- *
+ * 
  * ? (question mark): The hotstring will be triggered even when it is inside another word;
  * that is, when the character typed immediately before it is alphanumeric.
  * Use ?0 to turn this option back off.
- *
+ * 
  * B0 (B followed by a zero): Automatic backspacing is not done to erase the abbreviation you type.
  * Use a plain B to turn backspacing back on after it was previously turned off.
- *
+ * 
  * C: Case sensitive: When you type an abbreviation, it must exactly match the case defined in the script.
  * Use C0 to turn case sensitivity back off.
- *
+ * 
  * O: Omit the ending character of auto-replace hotstrings when the replacement is produced.
  * Use O0 (the letter O followed by a zero) to turn this option back off.
  */
@@ -86,9 +85,10 @@ class RegExHs extends InputHook {
 		switch vk {
 			case 8:
 				Send("{Blind}{vk08 down}")
-				return
-			case 32, 9, 13, 160, 161:
-				return
+			case 32, 9, 13:
+				this.match(this.a0, vk, (*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))
+			case 160, 161:
+				; do nothing
 			default:
 				this.Stop()
 				this.Start()
@@ -97,10 +97,8 @@ class RegExHs extends InputHook {
 
 	OnKeyUp := this.keyUp
 	keyUp(vk, sc) {
-		if (vk = 8 || vk = 32 || vk = 9 || vk = 13) {
+		if (vk = 8 || vk = 32 || vk = 9 || vk = 13)
 			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
-			return
-		}
 	}
 
 	OnChar := this.char
@@ -109,23 +107,19 @@ class RegExHs extends InputHook {
 		; ToolTip(this.Input)
 
 		vk := GetKeyVK(GetKeyName(c))
-		if (vk = 32 || vk = 9 || vk = 13) {
-			this.match(this.a0, vk, 0)
-		} else {
-			this.match(this.a, vk, 1)
-			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
-		}
+		if (vk != 32 && vk != 9 && vk != 13)
+			this.match(this.a, vk)
 	}
 
-	match(map, vk, bs) {
+	match(map, vk, defer := (*) => 0) {
 		if (!map.Count) {
-			Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+			defer()
 			return
 		}
 		; find the last pattern without \s
 		if (!RegExMatch(this.Input, "(\S+)(?![\s\S]*(\S+))", &match)) {
 			this.Stop()
-			Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+			defer()
 			this.Start()
 			return
 		}
@@ -139,12 +133,12 @@ class RegExHs extends InputHook {
 			; if match, replace or call function
 			if (start) {
 				if (opt["B"])
-					Send("{BS " match.Len[0] - bs "}")
+					Send("{BS " match.Len[0] "}")
 				if (call is String) {
 					this.Stop()
 					Send(RegExReplace(SubStr(input, start), str, call))
 					if (!opt["O"])
-						Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+						defer()
 					this.Start()
 				} else if (call is Func) {
 					this.Stop()
@@ -155,6 +149,6 @@ class RegExHs extends InputHook {
 				return
 			}
 		}
-		Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+		defer()
 	}
 }
