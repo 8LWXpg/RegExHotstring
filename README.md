@@ -11,7 +11,7 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 - String:
   - [RegEx string](https://www.autohotkey.com/docs/v2/misc/RegEx-QuickRef.htm)
 - CallBack:
-  - calls function with RegEx match info
+  - calls function with [RegExMatchInfo](https://www.autohotkey.com/docs/v2/lib/RegExMatch.htm#MatchObject) as argument
   - RegExReplace string
 - Options:
   - \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
