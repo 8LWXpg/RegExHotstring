@@ -7,7 +7,7 @@ RegHook.Start()
 
 /**
  * Create a RegEx Hotstring or replace already existing one
- * @param {String} Str RegEx string
+ * @param {String} String RegEx string
  * @param {Func or String} CallBack calls function with RegEx match info or replace string
  * @param {String} Options
  * 
@@ -27,8 +27,8 @@ RegHook.Start()
  * O: Omit the ending character of auto-replace hotstrings when the replacement is produced.
  * Use O0 (the letter O followed by a zero) to turn this option back off.
  */
-RegExHotstring(Str, CallBack, Options := "") {
-	RegHook.Add(Str, CallBack, Options)
+RegExHotstring(String, CallBack, Options := "") {
+	RegHook.Add(String, CallBack, Options)
 }
 
 class RegExHs extends InputHook {
@@ -63,19 +63,19 @@ class RegExHs extends InputHook {
 		}
 	}
 
-	; append new RegExHotstring
-	Add(Str, CallBack, Options) {
-		info := RegExHs.obj(Str, CallBack, Options)
+	; add new RegExHotstring
+	Add(String, CallBack, Options) {
+		info := RegExHs.obj(String, CallBack, Options)
 		if (info.opt["*"]) {
 			try
-				this.a0.Delete(Str)
+				this.a0.Delete(String)
 			; end key is always omitted
 			info.opt["O"] := true
-			this.a[Str] := info
+			this.a[String] := info
 		} else {
 			try
-				this.a.Delete(Str)
-			this.a0[Str] := info
+				this.a.Delete(String)
+			this.a0[String] := info
 		}
 	}
 
@@ -117,13 +117,13 @@ class RegExHs extends InputHook {
 			return
 		}
 		; find the last pattern without \s
-		if (!RegExMatch(this.Input, "(\S+)(?![\s\S]*(\S+))", &match)) {
-			this.Stop()
+		RegExMatch(this.Input, "(\S+)(?![\s\S]*(\S+))", &match)
+		try
+			input := match[1]
+		catch {
 			defer()
-			this.Start()
 			return
 		}
-		input := match[1]
 		; loop through each strings and find the first match
 		for , obj in map {
 			str := obj.str
