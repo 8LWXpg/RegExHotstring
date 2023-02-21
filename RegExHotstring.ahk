@@ -86,7 +86,9 @@ class RegExHs extends InputHook {
 			case 8:
 				Send("{Blind}{vk08 down}")
 			case 32, 9, 13:
-				this.match(this.a0, vk, (*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))
+				this.match(this.a0, vk,
+					SubStr(this.Input, 1, StrLen(this.Input) - 1),
+					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))
 			case 160, 161:
 				; do nothing
 			default:
@@ -97,30 +99,24 @@ class RegExHs extends InputHook {
 
 	OnKeyUp := this.keyUp
 	keyUp(vk, sc) {
-		if (vk = 8 || vk = 32 || vk = 9 || vk = 13)
-			Send("{Blind}{vk" Format("{:02x}", vk) " up}")
+		switch vk {
+			case 8, 32, 9, 13:
+				Send("{Blind}{vk" Format("{:02x}", vk) " up}")
+				this.Stop()
+				this.Start()
+		}
 	}
 
 	OnChar := this.char
 	char(c) {
-		; debug use
-		; ToolTip(this.Input)
-
 		vk := GetKeyVK(GetKeyName(c))
-		if (vk != 32 && vk != 9 && vk != 13)
+		if (vk != 32 || vk != 9 || vk != 13)
 			this.match(this.a, vk)
 	}
 
-	match(map, vk, defer := (*) => 0) {
+	match(map, vk, input := this.Input, defer := (*) => 0) {
+		ToolTip(this.Input)
 		if (!map.Count) {
-			defer()
-			return
-		}
-		; find the last pattern without \s
-		RegExMatch(this.Input, "(\S+)(?![\s\S]*(\S+))", &match)
-		try
-			input := match[1]
-		catch {
 			defer()
 			return
 		}
@@ -150,5 +146,6 @@ class RegExHs extends InputHook {
 			}
 		}
 		defer()
+		return
 	}
 }
