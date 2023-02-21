@@ -110,12 +110,13 @@ class RegExHs extends InputHook {
 	OnChar := this.char
 	char(c) {
 		vk := GetKeyVK(GetKeyName(c))
-		if (vk != 32 || vk != 9 || vk != 13)
+		if (vk != 32 && vk != 9 && vk != 13)
 			this.match(this.a, vk)
 	}
 
 	match(map, vk, input := this.Input, defer := (*) => 0) {
-		ToolTip(this.Input)
+		; debug use
+		; ToolTip(this.Input)
 		if (!map.Count) {
 			defer()
 			return
