@@ -10,20 +10,20 @@ RegHook.Start()
  * @param {String} String RegEx string
  * @param {Func or String} CallBack calls function with RegEx match info or replace string
  * @param {String} Options
- * 
+ *
  * \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
  * use *0 to turn this option back off.
- * 
+ *
  * ? (question mark): The hotstring will be triggered even when it is inside another word;
  * that is, when the character typed immediately before it is alphanumeric.
  * Use ?0 to turn this option back off.
- * 
+ *
  * B0 (B followed by a zero): Automatic backspacing is not done to erase the abbreviation you type.
  * Use a plain B to turn backspacing back on after it was previously turned off.
- * 
+ *
  * C: Case sensitive: When you type an abbreviation, it must exactly match the case defined in the script.
  * Use C0 to turn case sensitivity back off.
- * 
+ *
  * O: Omit the ending character of auto-replace hotstrings when the replacement is produced.
  * Use O0 (the letter O followed by a zero) to turn this option back off.
  */
@@ -85,10 +85,13 @@ class RegExHs extends InputHook {
 		switch vk {
 			case 8:
 				Send("{Blind}{vk08 down}")
-			case 32, 9, 13:
-				this.match(this.a0, vk,
+			case 9, 13, 32:
+				if (!this.match(this.a0, vk,
 					SubStr(this.Input, 1, StrLen(this.Input) - 1),
-					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))
+					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))) {
+					this.Stop()
+					this.Start()
+				}
 			case 160, 161:
 				; do nothing
 			default:
@@ -100,17 +103,15 @@ class RegExHs extends InputHook {
 	OnKeyUp := this.keyUp
 	keyUp(vk, sc) {
 		switch vk {
-			case 8, 32, 9, 13:
+			case 8, 9, 13, 32:
 				Send("{Blind}{vk" Format("{:02x}", vk) " up}")
-				this.Stop()
-				this.Start()
 		}
 	}
 
 	OnChar := this.char
 	char(c) {
 		vk := GetKeyVK(GetKeyName(c))
-		if (vk != 32 && vk != 9 && vk != 13)
+		if (vk != 9 && vk != 13 && vk != 32)
 			this.match(this.a, vk)
 	}
 
@@ -119,7 +120,7 @@ class RegExHs extends InputHook {
 		; ToolTip(this.Input)
 		if (!map.Count) {
 			defer()
-			return
+			return false
 		}
 		; loop through each strings and find the first match
 		for , obj in map {
@@ -143,10 +144,10 @@ class RegExHs extends InputHook {
 					this.Start()
 				} else
 					throw TypeError('CallBack type error `nCallBack should be "Func" or "String"')
-				return
+				return true
 			}
 		}
 		defer()
-		return
+		return false
 	}
 }

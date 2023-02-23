@@ -7,7 +7,8 @@
 ; replace with regex string
 RegExHotstring("(\w+)a", "b$1", "C")
 RegExHotstring("(\w)a(\w)", "$2a$1", "*")
-RegExHotstring("(\d+)(\w+)", "$2$1", "O?B0")
+RegExHotstring("(\d+)(\w+)", "$2$1", "OB0")
+RegExHotstring("a(\w)c", (match) => MsgBox("you just typed a" match[1] "c!"), "*?B0")
 
 ; use anonymous function
 RegExHotstring("(\w+)b", (match) => MsgBox("matched: " match[1]))
@@ -17,7 +18,7 @@ RegExHotstring("(\w+)b", (match) => MsgBox("matched: " match[1]))
 
 ; call with function name
 RegExHotstring("(\w*)c", call)
-RegExHotstring("r(\d+)s", rand)
+RegExHotstring("r(\d+)", rand)
 
 ; receives RegExMatchInfo
 call(match) {
