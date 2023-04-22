@@ -83,8 +83,6 @@ class RegExHs extends InputHook {
 	OnKeyDown := this.keyDown
 	keyDown(vk, sc) {
 		switch vk {
-			case 8:
-				Send("{Blind}{vk08 down}")
 			case 9, 13, 32:
 				; clear input if not match
 				if (!this.match(this.a0, vk,
@@ -105,7 +103,7 @@ class RegExHs extends InputHook {
 	OnKeyUp := this.keyUp
 	keyUp(vk, sc) {
 		switch vk {
-			case 8, 9, 13, 32:
+			case 9, 13, 32:
 				Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 		}
 	}
