@@ -91,7 +91,7 @@ class RegExHs extends InputHook {
 					this.Stop()
 					this.Start()
 				}
-			case 160, 161:
+			case 8, 160, 161:
 				; do nothing
 			default:
 				; clear input when press non-text key
