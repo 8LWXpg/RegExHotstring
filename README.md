@@ -4,15 +4,15 @@ Provides RegEx in hotstring triggering like normal hotstring.
 
 Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 
-## usage
+## Usage
 
 `RegExHotstring(String, CallBack, Options)`
 
 - String:
   - [RegEx string](https://www.autohotkey.com/docs/v2/misc/RegEx-QuickRef.htm)
 - CallBack:
-  - calls function with [RegExMatchInfo](https://www.autohotkey.com/docs/v2/lib/RegExMatch.htm#MatchObject) as argument
-  - RegExReplace string
+  - calls function with [RegExMatchInfo](https://www.autohotkey.com/docs/v2/lib/RegExMatch.htm#MatchObject) as argument and clear string that triggers it
+  - RegExReplace string, works like [RegExReplace](https://www.autohotkey.com/docs/v2/lib/RegExReplace.htm)
 - Options:
   - \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
   use *0 to turn this option back off.
@@ -30,7 +30,7 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
   - O: Omit the ending character of auto-replace hotstrings when the replacement is produced.
   Use O0 (the letter O followed by a zero) to turn this option back off.
 
-## limitations
+## Limitations
 
 - incompatible with `#IfWin` or `#HotIf`
 - unable to match white space characters and word boundaries (or anything related to that)
