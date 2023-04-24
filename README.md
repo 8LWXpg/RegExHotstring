@@ -30,4 +30,7 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
   - O: Omit the ending character of auto-replace hotstrings when the replacement is produced.
   Use O0 (the letter O followed by a zero) to turn this option back off.
 
-*currently incompatible with `#IfWin` or `#HotIf`*
+## limitations
+
+- incompatible with `#IfWin` or `#HotIf`
+- unable to match white space characters and word boundaries (or anything related to that)
