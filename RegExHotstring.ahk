@@ -137,7 +137,7 @@ class RegExHs extends InputHook {
 					Send("{BS " match.Len[0] "}")
 				if (call is String) {
 					this.Stop()
-					Send(RegExReplace(SubStr(input, start), str, call))
+					SendText(RegExReplace(SubStr(input, start), str, call))
 					if (!opt["O"])
 						defer()
 					this.Start()
