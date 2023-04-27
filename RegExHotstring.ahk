@@ -3,6 +3,7 @@
 SendLevel(1)
 RegHook := RegExHs("VI2")
 RegHook.NotifyNonText := true
+RegHook.VisibleText := false
 RegHook.KeyOpt("{Space}{Tab}{Enter}", "+SN")
 RegHook.Start()
 
@@ -83,15 +84,16 @@ class RegExHs extends InputHook {
 	OnKeyDown := this.keyDown
 	keyDown(vk, sc) {
 		switch vk {
+			case 8:
+				Send("{Blind}{vk" Format("{:02x}", vk) " down}")
 			case 9, 13, 32:
 				; clear input if not match
 				if (!this.match(this.a0, vk,
-					SubStr(this.Input, 1, StrLen(this.Input) - 1),
-					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))) {
+					SubStr(this.Input, 1, StrLen(this.Input) - 1))) {
 					this.Stop()
 					this.Start()
 				}
-			case 8, 160, 161:
+			case 160, 161:
 				; do nothing
 			default:
 				; clear input when press non-text key
@@ -103,7 +105,7 @@ class RegExHs extends InputHook {
 	OnKeyUp := this.keyUp
 	keyUp(vk, sc) {
 		switch vk {
-			case 9, 13, 32:
+			case 8, 9, 13, 32:
 				Send("{Blind}{vk" Format("{:02x}", vk) " up}")
 		}
 	}
@@ -115,14 +117,18 @@ class RegExHs extends InputHook {
 			case 9, 13, 32:
 				return
 		}
-		this.match(this.a, vk)
+		if (this.match(this.a, vk, , 1, c)) {
+			this.Stop()
+			this.Start()
+		}
+		Send("{Blind}{" c " up}")
 	}
 
-	match(map, vk, input := this.Input, defer := (*) => 0) {
+	match(map, vk, input := this.Input, a := 0, c := 0) {
 		; debug use
 		; ToolTip(this.Input)
 		if (!map.Count) {
-			defer()
+			Send("{Blind}{vk" Format("{:02x}", vk) " down}")
 			return false
 		}
 		; loop through each strings and find the first match
@@ -134,23 +140,25 @@ class RegExHs extends InputHook {
 			; if match, replace or call function
 			if (start) {
 				if (opt["B"])
-					Send("{BS " match.Len[0] "}")
+					Send("{BS " match.Len[0] - a "}")
 				if (call is String) {
 					this.Stop()
 					SendText(RegExReplace(SubStr(input, start), str, call))
 					if (!opt["O"])
-						defer()
+						Send("{Blind}{vk" Format("{:02x}", vk) " down}")
 					this.Start()
 				} else if (call is Func) {
+					Hotstring(":*:" c, (*) => 0, "On")
 					this.Stop()
 					call(match)
 					this.Start()
+					Hotstring(":*:" c, (*) => 0, "Off")
 				} else
 					throw TypeError('CallBack type error `nCallBack should be "Func" or "String"')
 				return true
 			}
 		}
-		defer()
+		Send("{Blind}{vk" Format("{:02x}", vk) " down}")
 		return false
 	}
 }

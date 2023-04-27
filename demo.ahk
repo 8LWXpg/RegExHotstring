@@ -8,10 +8,10 @@
 RegExHotstring("(\w+)a", "b$1", "C")
 RegExHotstring("(\w)a(\w)", "$2a$1", "*")
 RegExHotstring("(\d+)(\w+)", "$2$1", "OB0")
-RegExHotstring("a(\w)c", (match) => MsgBox("you just typed a" match[1] "c!"), "*?B0")
 
 ; use anonymous function
-RegExHotstring("(\w+)b", (match) => MsgBox("matched: " match[1]))
+RegExHotstring("a(\w)c", (match) => MsgBox("you just typed a" match[1] "c!"), "*?B0")
+RegExHotstring("\w+b", (*) => Send("{Enter}"))
 
 ; modify callback and options
 ^!a:: RegExHotstring("(\w+)a", (match) => MsgBox("matched: " match[1]), "*")
