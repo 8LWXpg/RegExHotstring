@@ -85,11 +85,12 @@ class RegExHs extends InputHook {
 	keyDown(vk, sc) {
 		switch vk {
 			case 8:
-				Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+				Send("{Blind}{vk08 down}")
 			case 9, 13, 32:
 				; clear input if not match
-				if (!this.match(this.a0, vk,
-					SubStr(this.Input, 1, StrLen(this.Input) - 1))) {
+				if (!this.match(this.a0,
+					SubStr(this.Input, 1, StrLen(this.Input) - 1),
+					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))) {
 					this.Stop()
 					this.Start()
 				}
@@ -117,18 +118,18 @@ class RegExHs extends InputHook {
 			case 9, 13, 32:
 				return
 		}
-		if (this.match(this.a, vk, , 1, c)) {
+		if (this.match(this.a, , (*) => Send("{Blind}{" c " down}"), 1, c)) {
 			this.Stop()
 			this.Start()
 		}
 		Send("{Blind}{" c " up}")
 	}
 
-	match(map, vk, input := this.Input, a := 0, c := 0) {
+	match(map, input := this.Input, defer := (*) => 0, a := 0, c := 0) {
 		; debug use
 		; ToolTip(this.Input)
 		if (!map.Count) {
-			Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+			defer()
 			return false
 		}
 		; loop through each strings and find the first match
@@ -145,7 +146,7 @@ class RegExHs extends InputHook {
 					this.Stop()
 					SendText(RegExReplace(SubStr(input, start), str, call))
 					if (!opt["O"])
-						Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+						defer()
 					this.Start()
 				} else if (call is Func) {
 					Hotstring(":*:" c, (*) => 0, "On")
@@ -158,7 +159,7 @@ class RegExHs extends InputHook {
 				return true
 			}
 		}
-		Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+		defer()
 		return false
 	}
 }
