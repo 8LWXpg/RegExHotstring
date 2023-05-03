@@ -118,10 +118,8 @@ class RegExHs extends InputHook {
 			case 9, 13, 32:
 				return
 		}
-		if (this.match(this.a, , (*) => Send("{Blind}{" c " down}"), 1, c)) {
-			this.Stop()
-			this.Start()
-		}
+		; no need to clear input
+		this.match(this.a, , (*) => Send("{Blind}{" c " down}"), 1, c)
 		Send("{Blind}{" c " up}")
 	}
 
