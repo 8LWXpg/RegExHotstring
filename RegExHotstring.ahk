@@ -118,6 +118,7 @@ class RegExHs extends InputHook {
 			case 9, 13, 32:
 				return
 		}
+		GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
 		; no need to clear input
 		this.match(this.a, , (*) => Send("{Blind}{" c " down}"), 1, c)
 		Send("{Blind}{" c " up}")
