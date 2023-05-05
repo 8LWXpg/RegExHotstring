@@ -13,6 +13,8 @@ RegHook.Start()
  * @param {Func or String} CallBack calls function with RegEx match info or replace string
  * @param {String} Options
  * 
+ * Version 3.2
+ * 
  * \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
  * use *0 to turn this option back off.
  * 
