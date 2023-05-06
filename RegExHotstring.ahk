@@ -4,7 +4,7 @@ SendLevel(1)
 RegHook := RegExHs("VI2")
 RegHook.NotifyNonText := true
 RegHook.VisibleText := false
-RegHook.KeyOpt("{Space}{Tab}{Enter}", "+SN")
+RegHook.KeyOpt("{Space}{Tab}{Enter}{NumpadEnter}", "+SN")
 RegHook.Start()
 
 /**
