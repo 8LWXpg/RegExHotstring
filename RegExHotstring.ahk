@@ -1,5 +1,6 @@
 #Requires AutoHotkey v2.0
 
+; this send level allows trigger hotstring in same script
 SendLevel(1)
 RegHook := RegExHs("VI2")
 RegHook.NotifyNonText := true
@@ -9,8 +10,9 @@ RegHook.Start()
 
 /**
  * Create a RegEx Hotstring or replace already existing one
- * @param {String} String RegEx string
- * @param {Func or String} CallBack calls function with RegEx match info or replace string
+ * @param {String} String [RegEx string](https://www.autohotkey.com/docs/v2/misc/RegEx-QuickRef.htm)
+ * @param {Func or String} CallBack calls function with [RegExMatchInfo](https://www.autohotkey.com/docs/v2/lib/RegExMatch.htm#MatchObject)
+ *  or replace string like [RegExReplace](https://www.autohotkey.com/docs/v2/lib/RegExReplace.htm)
  * @param {String} Options
  * 
  * \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
@@ -40,7 +42,7 @@ class RegExHs extends InputHook {
 	; "*" option
 	a := Map()
 
-	; process RegEx string and options then store in obj
+	; process RegEx string and options then store in obj with properties str, call, opt
 	class obj {
 		__New(string, call, options) {
 			this.call := call
@@ -95,7 +97,7 @@ class RegExHs extends InputHook {
 					this.Start()
 				}
 			case 160, 161:
-				; do nothing
+				; do nothing on shift key
 			default:
 				; clear input when press non-text key
 				this.Stop()
@@ -118,6 +120,7 @@ class RegExHs extends InputHook {
 			case 9, 13, 32:
 				return
 		}
+		; if capslock is on, convert to lower case
 		GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
 		; no need to clear input
 		this.match(this.a, , (*) => Send("{Blind}{" c " down}"), 1, c)
@@ -137,13 +140,13 @@ class RegExHs extends InputHook {
 			call := obj.call
 			opt := obj.opt
 			start := RegExMatch(input, str, &match)
-			; if match, replace or call function
+			; if match, send replace or call function
 			if (start) {
 				if (opt["B"])
 					Send("{BS " match.Len[0] - a "}")
 				if (call is String) {
 					this.Stop()
-					SendText(RegExReplace(SubStr(input, start), str, call))
+					Send(RegExReplace(SubStr(input, start), str, call))
 					if (!opt["O"])
 						defer()
 					this.Start()
