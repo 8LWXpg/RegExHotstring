@@ -33,4 +33,4 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 ## Limitations
 
 - incompatible with `#IfWin` or `#HotIf`
-- unable to match white space characters and word boundaries (or anything related to that)
+- unable to match white space characters.
