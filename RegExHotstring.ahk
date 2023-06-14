@@ -15,21 +15,22 @@ RegHook.Start()
  *  or replace string like [RegExReplace](https://www.autohotkey.com/docs/v2/lib/RegExReplace.htm)
  * @param {String} Options
  * 
- * \* (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
- * use *0 to turn this option back off.
+ * Use the following options follow by a zero to turn them off:
  * 
- * ? (question mark): The hotstring will be triggered even when it is inside another word;
+ * `*` (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
+ * 
+ * `?` (question mark): The hotstring will be triggered even when it is inside another word;
  * that is, when the character typed immediately before it is alphanumeric.
- * Use ?0 to turn this option back off.
  * 
- * B0 (B followed by a zero): Automatic backspacing is not done to erase the abbreviation you type.
+ * `B0` (B followed by a zero): Automatic backspacing is not done to erase the abbreviation you type.
  * Use a plain B to turn backspacing back on after it was previously turned off.
  * 
- * C: Case sensitive: When you type an abbreviation, it must exactly match the case defined in the script.
- * Use C0 to turn case sensitivity back off.
+ * `C`: Case sensitive: When you type an abbreviation, it must exactly match the case defined in the script.
  * 
- * O: Omit the ending character of auto-replace hotstrings when the replacement is produced.
- * Use O0 (the letter O followed by a zero) to turn this option back off.
+ * `O`: Omit the ending character of auto-replace hotstrings when the replacement is produced.
+ * 
+ * `T`: Use SendText instead of SendInput to send the replacement string.
+ * Only works when CallBack is a string.
  */
 RegExHotstring(String, CallBack, Options := "") {
 	RegHook.Add(String, CallBack, Options)
@@ -47,10 +48,10 @@ class RegExHs extends InputHook {
 		__New(string, call, options) {
 			this.call := call
 			this.str := string
-			this.opt := Map("*", false, "?", false, "B", true, "C", false, "O", false)
+			this.opt := Map("*", false, "?", false, "B", true, "C", false, "O", false, "T", false)
 			loop parse (options) {
 				switch A_LoopField {
-					case "*", "?", "B", "C", "O":
+					case "*", "?", "B", "C", "O", "T":
 						this.opt[A_LoopField] := true
 					case "0":
 						try
@@ -146,7 +147,11 @@ class RegExHs extends InputHook {
 					Send("{BS " match.Len[0] - a "}")
 				if (call is String) {
 					this.Stop()
-					Send(RegExReplace(SubStr(input, start), str, call))
+					if (opt["T"]) {
+						SendText(RegExReplace(SubStr(input, start), str, call))
+					} else {
+						Send(RegExReplace(SubStr(input, start), str, call))
+					}
 					if (!opt["O"])
 						defer()
 					this.Start()
