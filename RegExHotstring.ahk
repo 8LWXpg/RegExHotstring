@@ -2,7 +2,7 @@
 
 ; this send level allows trigger hotstring in same script
 SendLevel(1)
-RegHook := RegExHs("VI2")
+RegHook := RegExHk("VI2")
 RegHook.NotifyNonText := true
 RegHook.VisibleText := false
 RegHook.KeyOpt("{Space}{Tab}{Enter}{NumpadEnter}{BackSpace}", "+SN")
@@ -36,14 +36,14 @@ RegExHotstring(String, CallBack, Options := "") {
 	RegHook.Add(String, CallBack, Options)
 }
 
-class RegExHs extends InputHook {
+class RegExHk extends InputHook {
 	; stores with RegEx string as key and obj as value
 	; "*0" option
 	a0 := Map()
 	; "*" option
 	a := Map()
 
-	; process RegEx string and options then store in obj with properties str, call, opt
+	; parse options and store in map
 	class obj {
 		__New(string, call, options) {
 			this.call := call
@@ -68,9 +68,8 @@ class RegExHs extends InputHook {
 		}
 	}
 
-	; add new RegExHotstring
 	Add(String, CallBack, Options) {
-		info := RegExHs.obj(String, CallBack, Options)
+		info := RegExHk.obj(String, CallBack, Options)
 		if (info.opt["*"]) {
 			try
 				this.a0.Delete(String)
@@ -116,6 +115,13 @@ class RegExHs extends InputHook {
 
 	OnChar := this.char
 	char(c) {
+		if (StrLen(c) > 1) {
+			this.Stop()
+			SendText(c)
+			this.Start()
+			return
+		}
+
 		vk := GetKeyVK(GetKeyName(c))
 		switch vk {
 			case 9, 13, 32:
