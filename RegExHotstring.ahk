@@ -98,7 +98,7 @@ class RegExHk extends InputHook {
 				}
 			case 160, 161:
 				; do nothing on shift key
-			default:
+default:
 				; clear input when press non-text key
 				this.Stop()
 				this.Start()
@@ -115,23 +115,20 @@ class RegExHk extends InputHook {
 
 	OnChar := this.char
 	char(c) {
-		if (StrLen(c) > 1) {
-			this.Stop()
-			SendText(c)
-			this.Start()
-			return
+		blind := StrLen(c) > 1 ? "" : "{Blind}"
+		loop parse c {
+			c := A_LoopField
+			vk := GetKeyVK(GetKeyName(c))
+			switch vk {
+				case 9, 13, 32:
+					return
+			}
+			; if capslock is on, convert to lower case
+			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
+			; no need to clear input
+			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1, c)
+			Send(blind "{" c " up}")
 		}
-
-		vk := GetKeyVK(GetKeyName(c))
-		switch vk {
-			case 9, 13, 32:
-				return
-		}
-		; if capslock is on, convert to lower case
-		GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
-		; no need to clear input
-		this.match(this.a, , (*) => Send("{Blind}{" c " down}"), 1, c)
-		Send("{Blind}{" c " up}")
 	}
 
 	match(map, input := this.Input, defer := (*) => 0, a := 0, c := 0) {
