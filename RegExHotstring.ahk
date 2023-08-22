@@ -14,21 +14,21 @@ RegHook.Start()
  * @param {Func or String} CallBack calls function with [RegExMatchInfo](https://www.autohotkey.com/docs/v2/lib/RegExMatch.htm#MatchObject)
  *  or replace string like [RegExReplace](https://www.autohotkey.com/docs/v2/lib/RegExReplace.htm)
  * @param {String} Options
- * 
+ *
  * Use the following options follow by a zero to turn them off:
- * 
+ *
  * `*` (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.
- * 
+ *
  * `?` (question mark): The hotstring will be triggered even when it is inside another word;
  * that is, when the character typed immediately before it is alphanumeric.
- * 
+ *
  * `B0` (B followed by a zero): Automatic backspacing is not done to erase the abbreviation you type.
  * Use a plain B to turn backspacing back on after it was previously turned off.
- * 
+ *
  * `C`: Case sensitive: When you type an abbreviation, it must exactly match the case defined in the script.
- * 
+ *
  * `O`: Omit the ending character of auto-replace hotstrings when the replacement is produced.
- * 
+ *
  * `T`: Use SendText instead of SendInput to send the replacement string.
  * Only works when CallBack is a string.
  */
@@ -98,7 +98,7 @@ class RegExHk extends InputHook {
 				}
 			case 160, 161:
 				; do nothing on shift key
-default:
+			default:
 				; clear input when press non-text key
 				this.Stop()
 				this.Start()
