@@ -6,7 +6,9 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 
 ## Usage
 
-`RegExHotstring(String, CallBack, Options)`
+```
+RegExHotstring(String, CallBack, Options)
+```
 
 - String:
   - [RegEx string](https://www.autohotkey.com/docs/v2/misc/RegEx-QuickRef.htm)
