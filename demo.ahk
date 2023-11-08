@@ -20,6 +20,7 @@ RegExHotstring("\w+b", (*) => Send("{Enter}"))
 ; call with function name
 RegExHotstring("(\w*)c", call)
 RegExHotstring("r(\d+)", rand)
+RegExHotstring("\\frak\{(\w+)\}", frak, "C*")
 
 ; receives RegExMatchInfo
 call(match) {
@@ -34,4 +35,20 @@ rand(match) {
 		str .= SubStr(char, r, 1)
 	}
 	SendText(str)
+}
+
+frak(match) {
+	ret := ""
+	loop parse match[1] {
+		char := Ord(A_LoopField)
+		switch {
+			case char >= 65 && char <= 90: ; A-Z
+				ret .= Chr(char + 0x1D52B)
+			case char >= 97 && char <= 122: ; a-z
+				ret .= Chr(char + 0x1D525)
+			default:
+				ret .= char
+		}
+	}
+	SendText(ret)
 }

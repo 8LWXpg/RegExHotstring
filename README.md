@@ -32,6 +32,10 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
   - `T`: Use SendText instead of SendInput to send the replacement string.
   Only works when CallBack is a string.
 
+## Demo
+
+[Demo.gif](demo.gif)
+
 ## Limitations
 
 - incompatible with `#IfWin` or `#HotIf`
