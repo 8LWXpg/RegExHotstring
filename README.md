@@ -34,7 +34,7 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
 
 ## Demo
 
-[Demo.gif](demo.gif)
+![Demo.gif](demo.gif)
 
 ## Limitations
 
