@@ -15,6 +15,8 @@ Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
   - RegExReplace string, works like [RegExReplace](https://www.autohotkey.com/docs/v2/lib/RegExReplace.htm)
 - Options:
 
+  A string of zero or more of the following options (in any order, with optional spaces in between)
+
   Use the following options follow by a zero to turn them off:
 
   - `*` (asterisk): An ending character (e.g. Space, Tab, or Enter) is not required to trigger the hotstring.

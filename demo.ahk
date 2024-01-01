@@ -11,7 +11,7 @@ RegExHotstring("(\d+)(\w+)", "$2$1", "OB0")
 RegExHotstring("U\+([0-9A-F]{4})", "{U+$1}", "C")
 
 ; use anonymous function
-RegExHotstring("a(\w)c", (match) => MsgBox("you just typed a" match[1] "c!"), "*?B0")
+RegExHotstring("a(\w)c", (match) => MsgBox("you just typed a" match[1] "c!"), "* ? B0")
 RegExHotstring("\w+b", (*) => Send("{Enter}"))
 
 ; modify callback and options
