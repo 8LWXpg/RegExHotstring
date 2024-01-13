@@ -2,7 +2,7 @@
 
 Provides RegEx in hotstring triggering like normal hotstring.
 
-Use `Space`, `Tab` or `Enter` to trigger RegExHotstring.
+Use <kbd>Space</kbd>, <kbd>Tab</kbd> or <kbd>Enter</kbd> to trigger RegExHotstring.
 
 ## Usage
 
