@@ -128,8 +128,8 @@ class RegExHk extends InputHook {
 			; if capslock is on, convert to lower case
 			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
 			; no need to clear input
-			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1, c)
-			Send(blind "{" c " up}")
+			this.match(this.a, , (*) => Send(blind "{" c "}"), 1, c)
+			; Send(blind "{" c " up}")
 		}
 	}
 
