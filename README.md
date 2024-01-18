@@ -35,6 +35,9 @@ RegExHotstring(String, CallBack, Options)
 
   - `T`: Use SendText instead of SendInput to send the replacement string.
   Only works when CallBack is a string.
+- Params:
+
+  additional params pass to CallBack, check [Variadic functions](https://www.autohotkey.com/docs/v2/Functions.htm#Variadic) and [Variadic function calls](https://www.autohotkey.com/docs/v2/Functions.htm#VariadicCall), only works when CallBack is a function.
 
 ## Demo
 

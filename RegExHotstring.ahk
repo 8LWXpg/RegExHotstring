@@ -12,7 +12,7 @@ RegHook.Start()
  * Create a RegEx Hotstring or replace already existing one
  * @param {String} String [RegEx string](https://www.autohotkey.com/docs/v2/misc/RegEx-QuickRef.htm)
  * @param {Func or String} CallBack calls function with [RegExMatchInfo](https://www.autohotkey.com/docs/v2/lib/RegExMatch.htm#MatchObject)
- *  or replace string like [RegExReplace](https://www.autohotkey.com/docs/v2/lib/RegExReplace.htm)
+ * and array of additional params or replace string like [RegExReplace](https://www.autohotkey.com/docs/v2/lib/RegExReplace.htm)
  * @param {String} Options A string of zero or more of the following options (in any order, with optional spaces in between)
  * 
  * Use the following options follow by a zero to turn them off:
@@ -31,9 +31,12 @@ RegHook.Start()
  * 
  * `T`: Use SendText instead of SendInput to send the replacement string.
  * Only works when CallBack is a string.
+ * 
+ * @param {Params} Params additional params pass to CallBack, check [Variadic functions](https://www.autohotkey.com/docs/v2/Functions.htm#Variadic)
+ * and [Variadic function calls](https://www.autohotkey.com/docs/v2/Functions.htm#VariadicCall), only works when CallBack is a function.
  */
-RegExHotstring(String, CallBack, Options := "") {
-	RegHook.Add(String, CallBack, Options)
+RegExHotstring(String, CallBack, Options := "", Params*) {
+	RegHook.Add(String, CallBack, Options, Params*)
 }
 
 class RegExHk extends InputHook {
@@ -45,10 +48,11 @@ class RegExHk extends InputHook {
 
 	; parse options and store in map
 	class obj {
-		__New(string, call, options) {
+		__New(string, call, options, params*) {
 			this.call := call
 			this.str := string
 			this.opt := Map("*", false, "?", false, "B", true, "C", false, "O", false, "T", false)
+			this.params := params
 			loop parse (options) {
 				switch A_LoopField {
 					case "*", "?", "B", "C", "O", "T":
@@ -70,8 +74,8 @@ class RegExHk extends InputHook {
 		}
 	}
 
-	Add(String, CallBack, Options) {
-		info := RegExHk.obj(String, CallBack, Options)
+	Add(String, CallBack, Options, Params*) {
+		info := RegExHk.obj(String, CallBack, Options, Params*)
 		if (info.opt["*"]) {
 			try
 				this.a0.Delete(String)
@@ -145,6 +149,7 @@ class RegExHk extends InputHook {
 			str := obj.str
 			call := obj.call
 			opt := obj.opt
+			params := obj.params
 			start := RegExMatch(input, str, &match)
 			; if match, send replace or call function
 			if (start) {
@@ -161,9 +166,10 @@ class RegExHk extends InputHook {
 						defer()
 					this.Start()
 				} else if (call is Func) {
+					; suppress trigger text key
 					Hotstring(":*:" c, (*) => 0, "On")
 					this.Stop()
-					call(match)
+					call(match, params*)
 					this.Start()
 					Hotstring(":*:" c, (*) => 0, "Off")
 				} else
