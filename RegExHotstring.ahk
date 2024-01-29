@@ -35,8 +35,8 @@ RegHook.Start()
  * @param {Params} Params additional params pass to CallBack, check [Variadic functions](https://www.autohotkey.com/docs/v2/Functions.htm#Variadic)
  * and [Variadic function calls](https://www.autohotkey.com/docs/v2/Functions.htm#VariadicCall), only works when CallBack is a function.
  */
-RegExHotstring(String, CallBack, Options := "", Params*) {
-	RegHook.Add(String, CallBack, Options, Params*)
+RegExHotstring(String, CallBack, Options := "", OnOffToggle := "On", Params*) {
+	RegHook.Add(String, CallBack, Options, OnOffToggle, Params*)
 }
 
 class RegExHk extends InputHook {
@@ -48,11 +48,12 @@ class RegExHk extends InputHook {
 
 	; parse options and store in map
 	class obj {
-		__New(string, call, options, params*) {
+		__New(string, call, options, on, params*) {
 			this.call := call
 			this.str := string
-			this.opt := Map("*", false, "?", false, "B", true, "C", false, "O", false, "T", false)
 			this.params := params
+
+			this.opt := Map("*", false, "?", false, "B", true, "C", false, "O", false, "T", false)
 			loop parse (options) {
 				switch A_LoopField {
 					case "*", "?", "B", "C", "O", "T":
@@ -61,30 +62,55 @@ class RegExHk extends InputHook {
 						try
 							this.opt[temp] := false
 						catch
-							throw ValueError("Unknown option: " A_LoopField)
+							throw ValueError("Unknown Option: " A_LoopField)
 					case " ":
 						continue
 					default:
-						throw ValueError("Unknown option: " A_LoopField)
+						throw ValueError("Unknown Option: " A_LoopField)
 				}
 				temp := A_LoopField
 			}
 			this.str := this.opt["?"] ? this.str "$" : "^" this.str "$"
 			this.str := this.opt["C"] ? this.str : "i)" this.str
+
+			switch on {
+				case "On", 1, true:
+					this.on := true
+				case "Off", 0, false:
+					this.on := false
+				case "Toggle", -1:
+					this.on := true
+				default:
+					throw ValueError("Unknown OnOffToggle: " on)
+			}
 		}
 	}
 
-	Add(String, CallBack, Options, Params*) {
-		info := RegExHk.obj(String, CallBack, Options, Params*)
+	Add(String, CallBack, Options, OnOffToggle, Params*) {
+		toggle := false
+		switch OnOffToggle {
+			case "Toggle", -1:
+				toggle := true
+		}
+
+		info := RegExHk.obj(String, CallBack, Options, OnOffToggle, Params*)
 		if (info.opt["*"]) {
 			try
 				this.a0.Delete(String)
 			; end key is always omitted
 			info.opt["O"] := true
+			if (toggle) {
+				try
+					info.on := !this.a[String].on
+			}
 			this.a[String] := info
 		} else {
 			try
 				this.a.Delete(String)
+			if (toggle) {
+				try
+					info.on := !this.a0[String].on
+			}
 			this.a0[String] := info
 		}
 	}
@@ -146,6 +172,8 @@ class RegExHk extends InputHook {
 		}
 		; loop through each strings and find the first match
 		for , obj in map {
+			if (!obj.on)
+				continue
 			str := obj.str
 			call := obj.call
 			opt := obj.opt
@@ -173,7 +201,7 @@ class RegExHk extends InputHook {
 					this.Start()
 					Hotstring(":*:" c, (*) => 0, "Off")
 				} else
-					throw TypeError('CallBack type error `nCallBack should be "Func" or "String"')
+					throw TypeError('CallBack should be "Func" or "String"')
 				return true
 			}
 		}

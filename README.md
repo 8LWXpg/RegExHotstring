@@ -6,8 +6,8 @@ Use <kbd>Space</kbd>, <kbd>Tab</kbd> or <kbd>Enter</kbd> to trigger RegExHotstri
 
 ## Usage
 
-```
-RegExHotstring(String, CallBack, Options)
+```ahk
+RegExHotstring(String, CallBack, Options, OnOffToggle, Params*)
 ```
 
 - String:
@@ -35,6 +35,15 @@ RegExHotstring(String, CallBack, Options)
 
   - `T`: Use SendText instead of SendInput to send the replacement string.
   Only works when CallBack is a string.
+- OnOffToggle
+
+  One of the following values:
+
+  - On or 1 (true): Enables the hotstring.
+
+  - Off or 0 (false): Disables the hotstring.
+
+  - Toggle or -1: Sets the hotstring to the opposite state (enabled or disabled).
 - Params:
 
   additional params pass to CallBack, check [Variadic functions](https://www.autohotkey.com/docs/v2/Functions.htm#Variadic) and [Variadic function calls](https://www.autohotkey.com/docs/v2/Functions.htm#VariadicCall), only works when CallBack is a function.
