@@ -52,6 +52,25 @@ RegExHotstring(String, CallBack, Options, OnOffToggle, Params*)
 
 ![Demo.gif](demo.gif)
 
+## FAQ
+
+### How to trigger regular hotstring in the same script?
+
+Set `SendLevel` higher than `#InputLevel` (default is `0`), and set `RegHook.MinSendLevel` higher than `SendLevel` to avoid triggering `InputHook` recursively.
+
+```ahk
+#Include RegExHotstring.ahk
+
+::btw::by the way
+
+RegHook.MinSendLevel := 2
+SendLevel(1)
+RegExHotstring(...)
+```
+
+> [!IMPORTANT]
+> Only last `SendLevel` taking effect.
+
 ## Limitations
 
 - incompatible with `#IfWin` or `#HotIf`

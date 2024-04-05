@@ -1,8 +1,6 @@
 #Requires AutoHotkey v2.0
 
-; this send level allows trigger hotstring in same script
-SendLevel(1)
-RegHook := RegExHk("VI2")
+RegHook := RegExHk("VI")
 RegHook.NotifyNonText := true
 RegHook.VisibleText := false
 RegHook.KeyOpt("{Space}{Tab}{Enter}{NumpadEnter}{BackSpace}", "+SN")
