@@ -69,7 +69,7 @@ RegExHotstring(...)
 ```
 
 > [!IMPORTANT]
-> Only last `SendLevel` taking effect.
+> Only last `SendLevel` takes effect.
 
 ## Limitations
 
