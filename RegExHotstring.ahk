@@ -217,15 +217,20 @@ class RegExHk extends InputHook {
 
 OnKeyUp(c, Callback) {
 	static store := Map()
-	store[c] := InputHook("VI")
-	hook := store[c]
+	if store.Has(c) {
+		return
+	}
+
+	hook := store[c] := InputHook("VI")
 	hook.KeyOpt(c, "+N")
 	hook.OnKeyUp := KeyUp
+	hook.Dispose := (*) => store.Delete(c)
 	hook.Start()
 
-	KeyUp(ih, vk, sc) {
+	KeyUp(ih, *) {
 		Callback()
 		ih.Stop()
+		ih.Dispose()
 		ih := ""
 	}
 }
