@@ -39,12 +39,15 @@ RegExHotstring(String, CallBack, Options := "", OnOffToggle := "On", Params*) {
 
 class RegExHk extends InputHook {
 	; stores with RegEx string as key and obj as value
+
 	; "*0" option
 	a0 := Map()
 	; "*" option
 	a := Map()
 
-	; parse options and store in map
+	/**
+	 * Object for storing all the information
+	 */
 	class obj {
 		__New(string, call, options, on, params*) {
 			this.call := call
@@ -77,6 +80,7 @@ class RegExHk extends InputHook {
 				case "Off", 0, false:
 					this.on := false
 				case "Toggle", -1:
+					; toggle depands on the previous state, it's unreachable here, so defaults to true.
 					this.on := true
 				default:
 					throw ValueError("Unknown OnOffToggle: " on)
@@ -155,19 +159,17 @@ class RegExHk extends InputHook {
 			}
 			; if capslock is on, convert to lower case
 			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
-			; no need to clear input
 			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1)
 			OnKeyUp(c, (*) => Send(blind "{" c " up}"))
 		}
 	}
 
 	/**
-	 * 
+	 * Function for matching and executing
 	 * @param map Map to search for RegEx string
 	 * @param {String} input Input string
 	 * @param {(*) => void} defer What to do if no match
 	 * @param {Integer} a Backspace count offset `match.Len[0] - a`
-	 * @param {Integer} c Target character
 	 * @returns {Boolean} If match found
 	 */
 	match(map, input := this.Input, defer := (*) => 0, a := 0) {
@@ -215,6 +217,11 @@ class RegExHk extends InputHook {
 	}
 }
 
+/**
+ * Call function when key is up
+ * @param c Character to listen
+ * @param Callback Callback function
+ */
 OnKeyUp(c, Callback) {
 	static store := Map()
 	store[c] := InputHook("VI")
