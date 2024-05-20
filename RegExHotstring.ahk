@@ -123,8 +123,8 @@ class RegExHk extends InputHook {
 				if (!this.match(this.a0,
 					SubStr(this.Input, 1, StrLen(this.Input) - 1),
 					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))) {
-						this.Stop()
-						this.Start()
+					this.Stop()
+					this.Start()
 				}
 			case 160, 161:
 				; do nothing on shift key
@@ -156,11 +156,25 @@ class RegExHk extends InputHook {
 			; if capslock is on, convert to lower case
 			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
 			; no need to clear input
-			this.match(this.a, , (*) => Send(blind "{" c "}"), 1, c)
-			; Send(blind "{" c " up}")
+			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1, c)
+			Hotkey("~" c " Up", (self) => SendThenDisable(self, blind "{" c " up}"))
+
+			SendThenDisable(self, str) {
+				Send(str)
+				Hotkey(self, , "Off")
+			}
 		}
 	}
 
+	/**
+	 * 
+	 * @param map Map to search for RegEx string
+	 * @param {String} input Input string
+	 * @param {(*) => void} defer What to do if no match
+	 * @param {Integer} a Backspace count offset `match.Len[0] - a`
+	 * @param {Integer} c Target character
+	 * @returns {Boolean} If match found
+	 */
 	match(map, input := this.Input, defer := (*) => 0, a := 0, c := 0) {
 		; debug use
 		; ToolTip(this.Input)
@@ -193,11 +207,11 @@ class RegExHk extends InputHook {
 					this.Start()
 				} else if (call is Func) {
 					; suppress trigger text key
-					Hotstring(":*:" c, (*) => 0, "On")
+					; Hotstring(":*:" c, (*) => 0, "On")
 					this.Stop()
 					call(match, params*)
 					this.Start()
-					Hotstring(":*:" c, (*) => 0, "Off")
+					; Hotstring(":*:" c, (*) => 0, "Off")
 				} else
 					throw TypeError('CallBack should be "Func" or "String"')
 				return true
