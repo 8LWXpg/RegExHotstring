@@ -157,12 +157,7 @@ class RegExHk extends InputHook {
 			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
 			; no need to clear input
 			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1, c)
-			Hotkey("~" c " Up", (self) => SendThenDisable(self, blind "{" c " up}"))
-
-			SendThenDisable(self, str) {
-				Send(str)
-				Hotkey(self, , "Off")
-			}
+			OnKeyUp(c, (*) => Send(blind "{" c " up}"))
 		}
 	}
 
@@ -207,11 +202,11 @@ class RegExHk extends InputHook {
 					this.Start()
 				} else if (call is Func) {
 					; suppress trigger text key
-					; Hotstring(":*:" c, (*) => 0, "On")
+					Hotstring(":*:" c, (*) => 0, "On")
 					this.Stop()
 					call(match, params*)
 					this.Start()
-					; Hotstring(":*:" c, (*) => 0, "Off")
+					Hotstring(":*:" c, (*) => 0, "Off")
 				} else
 					throw TypeError('CallBack should be "Func" or "String"')
 				return true
@@ -219,5 +214,20 @@ class RegExHk extends InputHook {
 		}
 		defer()
 		return false
+	}
+}
+
+OnKeyUp(c, Callback) {
+	static store := Map()
+	store[c] := InputHook("VI")
+	hook := store[c]
+	hook.KeyOpt(c, "+N")
+	hook.OnKeyUp := KeyUp
+	hook.Start()
+
+	KeyUp(ih, vk, sc) {
+		Callback()
+		ih.Stop()
+		ih := ""
 	}
 }
