@@ -156,7 +156,7 @@ class RegExHk extends InputHook {
 			; if capslock is on, convert to lower case
 			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
 			; no need to clear input
-			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1, c)
+			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1)
 			OnKeyUp(c, (*) => Send(blind "{" c " up}"))
 		}
 	}
@@ -170,7 +170,7 @@ class RegExHk extends InputHook {
 	 * @param {Integer} c Target character
 	 * @returns {Boolean} If match found
 	 */
-	match(map, input := this.Input, defer := (*) => 0, a := 0, c := 0) {
+	match(map, input := this.Input, defer := (*) => 0, a := 0) {
 		; debug use
 		; ToolTip(this.Input)
 		if (!map.Count) {
@@ -202,11 +202,9 @@ class RegExHk extends InputHook {
 					this.Start()
 				} else if (call is Func) {
 					; suppress trigger text key
-					Hotstring(":*:" c, (*) => 0, "On")
 					this.Stop()
 					call(match, params*)
 					this.Start()
-					Hotstring(":*:" c, (*) => 0, "Off")
 				} else
 					throw TypeError('CallBack should be "Func" or "String"')
 				return true
