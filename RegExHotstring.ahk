@@ -218,7 +218,7 @@ class RegExHk extends InputHook {
 }
 
 /**
- * Call function when key is up
+ * Call function when key is up, for the same `c` only first `Callback` will be called, not for general use.
  * @param c Character to listen
  * @param Callback Callback function
  */
