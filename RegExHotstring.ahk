@@ -159,6 +159,7 @@ class RegExHk extends InputHook {
 			}
 			; if capslock is on, convert to lower case
 			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
+			SendLevel(A_SendLevel) ; WTF is this needed?
 			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1)
 			OnKeyUp(c, (*) => Send(blind "{" c " up}"))
 		}
@@ -230,14 +231,15 @@ OnKeyUp(c, Callback) {
 
 	hook := store[c] := InputHook("VI")
 	hook.KeyOpt(c, "+N")
+	hook.MinSendLevel := RegHook.MinSendLevel
 	hook.OnKeyUp := KeyUp
 	hook.Dispose := (*) => store.Delete(c)
 	hook.Start()
 
 	KeyUp(ih, *) {
 		Callback()
-		ih.Stop()
 		ih.Dispose()
+		ih.Stop()
 		ih := ""
 	}
 }
