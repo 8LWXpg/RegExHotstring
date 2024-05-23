@@ -169,7 +169,7 @@ class RegExHk extends InputHook {
 	 * Function for matching and executing
 	 * @param map Map to search for RegEx string
 	 * @param {String} input Input string
-	 * @param {(*) => void} defer What to do if no match
+	 * @param {(*) => void} defer What to do if no match or `O` is `false`
 	 * @param {Integer} a Backspace count offset `match.Len[0] - a`
 	 * @returns {Boolean} If match found
 	 */
@@ -193,6 +193,8 @@ class RegExHk extends InputHook {
 			if (start) {
 				if (opt["B"])
 					Send("{BS " match.Len[0] - a "}")
+				else
+					defer()
 				if (call is String) {
 					this.Stop()
 					if (opt["T"]) {
@@ -204,7 +206,6 @@ class RegExHk extends InputHook {
 						defer()
 					this.Start()
 				} else if (call is Func) {
-					; suppress trigger text key
 					this.Stop()
 					call(match, params*)
 					this.Start()
