@@ -2,7 +2,6 @@
 
 RegHook := RegExHk("VI")
 RegHook.NotifyNonText := true
-RegHook.VisibleText := false
 RegHook.KeyOpt("{Space}{Tab}{Enter}{NumpadEnter}{BackSpace}", "+SN")
 RegHook.Start()
 
@@ -159,9 +158,7 @@ class RegExHk extends InputHook {
 			}
 			; if capslock is on, convert to lower case
 			GetKeyState("CapsLock", "T") ? c := StrLower(c) : 0
-			SendLevel(A_SendLevel) ; WTF is this needed?
-			this.match(this.a, , (*) => Send(blind "{" c " down}"), 1)
-			OnKeyUp(c, (*) => Send(blind "{" c " up}"))
+			this.match(this.a)
 		}
 	}
 
@@ -170,10 +167,9 @@ class RegExHk extends InputHook {
 	 * @param map Map to search for RegEx string
 	 * @param {String} input Input string
 	 * @param {(*) => void} defer What to do if no match or `O` is `false`
-	 * @param {Integer} a Backspace count offset `match.Len[0] - a`
 	 * @returns {Boolean} If match found
 	 */
-	match(map, input := this.Input, defer := (*) => 0, a := 0) {
+	match(map, input := this.Input, defer := (*) => 0) {
 		; debug use
 		; ToolTip(this.Input)
 		if (!map.Count) {
@@ -191,12 +187,18 @@ class RegExHk extends InputHook {
 			start := RegExMatch(input, str, &match)
 			; if match, send replace or call function
 			if (start) {
-				if (opt["B"])
-					Send("{BS " match.Len[0] - a "}")
+				; ToolTip(match[1])
+				if (opt["B"]) {
+					loop match.Len[0] {
+						Send("{BS down}")
+					}
+					Send("{BS up}")
+				}
 				else
 					defer()
 				if (call is String) {
 					this.Stop()
+					ToolTip(RegExReplace(SubStr(input, start), str, call))
 					if (opt["T"]) {
 						SendText(RegExReplace(SubStr(input, start), str, call))
 					} else {
@@ -216,31 +218,5 @@ class RegExHk extends InputHook {
 		}
 		defer()
 		return false
-	}
-}
-
-/**
- * Call function when key is up, for the same `c` only first `Callback` will be called, not for general use.
- * @param c Character to listen
- * @param Callback Callback function
- */
-OnKeyUp(c, Callback) {
-	static store := Map()
-	if store.Has(c) {
-		return
-	}
-
-	hook := store[c] := InputHook("VI")
-	hook.KeyOpt(c, "+N")
-	hook.MinSendLevel := RegHook.MinSendLevel
-	hook.OnKeyUp := KeyUp
-	hook.Dispose := (*) => store.Delete(c)
-	hook.Start()
-
-	KeyUp(ih, *) {
-		Callback()
-		ih.Dispose()
-		ih.Stop()
-		ih := ""
 	}
 }
