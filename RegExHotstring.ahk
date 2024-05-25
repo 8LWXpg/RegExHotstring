@@ -188,6 +188,7 @@ class RegExHk extends InputHook {
 			; if match, send replace or call function
 			if (start) {
 				; ToolTip(match[1])
+				Sleep(1)
 				if (opt["B"]) {
 					loop match.Len[0] {
 						Send("{BS down}")
