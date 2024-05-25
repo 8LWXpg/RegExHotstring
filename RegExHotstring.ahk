@@ -196,9 +196,11 @@ class RegExHk extends InputHook {
 				}
 				else
 					defer()
+				; workaround for Send sometimes not working
+				Sleep(1)
 				if (call is String) {
+					; ToolTip(RegExReplace(SubStr(input, start), str, call))
 					this.Stop()
-					ToolTip(RegExReplace(SubStr(input, start), str, call))
 					if (opt["T"]) {
 						SendText(RegExReplace(SubStr(input, start), str, call))
 					} else {

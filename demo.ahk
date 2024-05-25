@@ -8,7 +8,7 @@
 RegExHotstring("(\w+)a", "b$1", "C")
 RegExHotstring("(\w)a(\w)", "$2a$1", "*")
 RegExHotstring("<(\w+)>", "</$1>", "*OB0")			; try <div>
-RegExHotstring("U\+([0-9A-F]{4})", "{U+$1}", "C")	; try U+221E ∞
+RegExHotstring("U([0-9A-F]{4})", "{U+$1}")	; try u221e ∞
 
 ; use anonymous function
 RegExHotstring("a(\w)c", (match) => MsgBox("you just typed a" match[1] "c!"), "* ? B0")
