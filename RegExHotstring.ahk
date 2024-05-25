@@ -126,7 +126,8 @@ class RegExHk extends InputHook {
 				; clear input if not match
 				if (!this.match(this.a0,
 					SubStr(this.Input, 1, StrLen(this.Input) - 1),
-					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}"))) {
+					(*) => Send("{Blind}{vk" Format("{:02x}", vk) " down}")
+				)) {
 					this.Stop()
 					this.Start()
 				}
@@ -221,6 +222,8 @@ class RegExHk extends InputHook {
 
 /**
  * Call function when key is up, for the same `c` only first `Callback` will be called, not for general use.
+ * 
+ * Fix: Restarting the RegHook will put it on the top of the input stack, preventing the keyup event from being triggered.
  * @param c Character to listen
  * @param Callback Callback function
  */
@@ -231,15 +234,15 @@ OnKeyUp(c, Callback) {
 	}
 
 	hook := store[c] := InputHook("VI")
-	hook.KeyOpt(c, "+N")
+	hook.KeyOpt(c, "N")
 	hook.MinSendLevel := RegHook.MinSendLevel
 	hook.OnKeyUp := KeyUp
-	hook.Dispose := (*) => store.Delete(c)
+	hook.OnEnd := (*) => store.Delete(c)
 	hook.Start()
+	; ToolTip(store.Count)
 
 	KeyUp(ih, *) {
 		Callback()
-		ih.Dispose()
 		ih.Stop()
 		ih := ""
 	}
