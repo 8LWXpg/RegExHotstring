@@ -130,6 +130,7 @@ class RegExHk extends InputHook {
 				)) {
 					this.Stop()
 					this.Start()
+					s.Restart()
 				}
 			case 160, 161:
 				; do nothing on shift key
@@ -137,6 +138,7 @@ class RegExHk extends InputHook {
 				; clear input when press non-text key
 				this.Stop()
 				this.Start()
+				s.Restart()
 		}
 	}
 
@@ -206,10 +208,12 @@ class RegExHk extends InputHook {
 					if (!opt["O"])
 						defer()
 					this.Start()
+					s.Restart()
 				} else if (call is Func) {
 					this.Stop()
 					call(match, params*)
 					this.Start()
+					s.Restart()
 				} else
 					throw TypeError('CallBack should be "Func" or "String"')
 				return true
@@ -220,6 +224,16 @@ class RegExHk extends InputHook {
 	}
 }
 
+class Store extends Map {
+	Restart() {
+		for _, v in this {
+			v.Stop()
+			v.Start()
+		}
+	}
+}
+s := Store()
+
 /**
  * Call function when key is up, for the same `c` only first `Callback` will be called, not for general use.
  * 
@@ -228,22 +242,22 @@ class RegExHk extends InputHook {
  * @param Callback Callback function
  */
 OnKeyUp(c, Callback) {
-	static store := Map()
-	if store.Has(c) {
+	if s.Has(c) {
 		return
 	}
 
-	hook := store[c] := InputHook("VI")
+	hook := s[c] := InputHook("VI")
 	hook.KeyOpt(c, "N")
 	hook.MinSendLevel := RegHook.MinSendLevel
 	hook.OnKeyUp := KeyUp
-	hook.OnEnd := (*) => store.Delete(c)
+	hook.Dispose := (*) => s.Delete(c)
 	hook.Start()
-	; ToolTip(store.Count)
+	; ToolTip(s.Count)
 
 	KeyUp(ih, *) {
 		Callback()
 		ih.Stop()
+		ih.Dispose()
 		ih := ""
 	}
 }
