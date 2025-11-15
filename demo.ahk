@@ -23,10 +23,12 @@ RegExHotstring("r(\d+)", rand)
 RegExHotstring("\\frak\{(\w+)\}", frak, "C*")
 
 ; receives RegExMatchInfo
+/** @param {RegExMatchInfo} match */
 call(match) {
 	MsgBox("matched: " match[1])
 }
 
+/** @param {RegExMatchInfo} match */
 rand(match) {
 	static char := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	static char_len := StrLen(char)
@@ -37,6 +39,7 @@ rand(match) {
 	SendText(str)
 }
 
+/** @param {RegExMatchInfo} match */
 frak(match) {
 	ret := ""
 	loop parse match[1] {
